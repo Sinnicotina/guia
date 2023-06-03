@@ -31,6 +31,14 @@ class ComunaController extends Controller
      */
     public function store(Request $request)
     {
+        $validate=validator::make($request->all(),[
+            'comu_nomb'=>['require','max:30', 'unique'],
+            'muni_codi'=>['require', 'numeric', 'min:1']
+        ]);
+
+        if ($validate->fails()){
+            return response()->json(['msg' => 'se produjo un error','statusCode'=>400]);
+        }
         //
         $comuna=new Comuna();
         $comuna->comu_nomb=$request->comu_nomb;
@@ -49,7 +57,11 @@ class ComunaController extends Controller
     public function show($id)
     {
         //
+        
         $comuna =Comuna::find($id); 
+        if(is_null ($comuna)){
+            return abort(404);
+        }
         $municipios =DB::table('tb_municipio') 
         ->orderBy('muni_nomb')
         ->get();
@@ -65,6 +77,14 @@ class ComunaController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $validate=validator::make($request->all(),[
+            'comu_nomb'=>['require','max:30', 'unique'],
+            'muni_codi'=>['require', 'numeric', 'min:1']
+        ]);
+
+        if ($validate->fails()){
+            return response()->json(['msg' => 'se produjo un error','statusCode'=>400]);
+        }
         //
         $comuna = Comuna::find($id);
         $comuna->comu_nomb=$request->comu_nomb; 
